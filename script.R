@@ -1,6 +1,10 @@
 rm(list = ls())
 
 
+if (!require('lintr')) install.packages('lintr')
+if (!require('styler')) install.packages('styler')
+
+
 if (!require('ggplot2')) install.packages('ggplot2')
 if (!require('stringr')) install.packages('stringr')
 if (!require('dplyr')) install.packages('dplyr')
@@ -9,6 +13,11 @@ if (!require('tidyverse')) install.packages('tidyverse')
 
 library(tidyverse)
 library(dplyr)
+library(lintr)
+library(styler)
+
+lintr::use_lintr(type = "tidyverse")
+
 
 # j'importe les données avec read_csv2 parce que c'est un csv avec des ; et que read_csv attend comme separateur des , 
 df <- readr::read_csv2("individu_reg.csv",
