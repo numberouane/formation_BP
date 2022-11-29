@@ -32,3 +32,4 @@ stats_agregees <- function(a, b = "moyenne",
   )
   
 }
+
