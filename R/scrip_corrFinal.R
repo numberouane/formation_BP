@@ -5,7 +5,7 @@ if (!require("stringr")) install.packages("stringr")
 if (!require("dplyr")) install.packages("dplyr")
 if (!require("tidyverse")) install.packages("tidyverse")
 if (!require("MASS")) install.packages("MASS")
-
+if (!require("arrow")) install.packages("arrow")
 
 library(tidyverse)
 library(dplyr)
@@ -169,3 +169,7 @@ df3[, "cs1"] <- factor(df3$cs1)
 df3 %>%
   filter(couple == "2" & aged > 40 & aged < 60)
 polr(surf ~ cs1 + factor(ur), df3)
+
+
+
+arrow::write_parquet(df, "individu_reg.parquet")

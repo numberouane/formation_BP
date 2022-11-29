@@ -1,7 +1,10 @@
+# première fonction : récup' de la décennie ----
 
 decennie_a_partir_annee <- function(annee) {
   return(annee - annee %% 10)
 }
+
+# deuxième fonction : stats centrales ----
 
 #' Compute aggregated statistics
 #'
