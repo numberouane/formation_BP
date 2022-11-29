@@ -19,7 +19,8 @@ library(styler)
 lintr::use_lintr(type = "tidyverse")
 
 
-# j'importe les données avec read_csv2 parce que c'est un csv avec des ; et que read_csv attend comme separateur des ,
+# j'importe les données avec read_csv2 parce que c'est un csv avec des 
+# et que read_csv attend comme separateur des ,
 df <- readr::read_csv2("individu_reg.csv",
   col_names = c(
     "region", "aemm", "aged", "anai", "catl", "cs1",
@@ -35,7 +36,8 @@ df <- df[-1, ]
 df2 <- df %>%
   select(c(
     "region", "dept", "aemm", "aged", "anai", "catl", "cs1", "cs2",
-    "cs3", "couple", "na38", "naf08", "pnai12", "sexe", "surf", "tp", "trans", "ur"
+    "cs3", "couple", "na38", "naf08", "pnai12", "sexe", "surf",
+    "tp", "trans", "ur"
   ))
 print(df2, 20)
 
@@ -50,8 +52,8 @@ print(summarise(df2, length(unique(unlist(cs1[!is.na(cs1)])))))
 
 summarise(group_by(df2, aged), n())
 
-decennie_a_partir_annee <- function(ANNEE) {
-  return(ANNEE - ANNEE %%
+decennie_a_partir_annee <- function(annee) {
+  return(annee - annee %%
     10)
 }
 
@@ -62,7 +64,8 @@ df2 %>%
   geom_histogram(aes(x = 5 * floor(as.numeric(aged) / 5)), stat = "count")
 
 ggplot(df2[as.numeric(df2$aged) > 50, c(3, 4)], aes(
-  x = as.numeric(aged), # x = as.numeric(aged) - as.numeric(aged) %% 5,
+  x = as.numeric(aged),
+  # x = as.numeric(aged) - as.numeric(aged) %% 5,
   y = ..density.., fill = factor(decennie_a_partir_annee(as.numeric(aemm)))
 ), alpha = 0.2) +
   geom_histogram(position = "dodge")
@@ -71,13 +74,15 @@ scale_fill_viridis_d()
 
 
 # part d'homme dans chaque cohort
-ggplot(df %>% group_by(aged, sexe) %>% summarise(SH_sexe = n()) %>% group_by(aged) %>% mutate(SH_sexe = SH_sexe / sum(SH_sexe)) %>% filter(sexe == 1)) +
+ggplot(df %>% group_by(aged, sexe) %>% summarise(SH_sexe = n()) %>%
+         group_by(aged) %>% mutate(SH_sexe = SH_sexe / sum(SH_sexe)) %>% filter(sexe == 1)) +
   geom_bar(aes(x = as.numeric(aged), y = SH_sexe), stat = "identity") +
   geom_point(aes(x = as.numeric(aged), y = SH_sexe), stat = "identity", color = "red") +
   coord_cartesian(c(0, 100))
 # correction (qu'il faudra retirer)
 ggplot(
-  df2 %>% group_by(aged, sexe) %>% summarise(SH_sexe = n()) %>% group_by(aged) %>% mutate(SH_sexe = SH_sexe / sum(SH_sexe)) %>% filter(sexe == 1)
+  df2 %>% group_by(aged, sexe) %>% summarise(SH_sexe = n()) %>%
+    group_by(aged) %>% mutate(SH_sexe = SH_sexe / sum(SH_sexe)) %>% filter(sexe == 1)
 ) +
   geom_bar(aes(x = as.numeric(aged), y = SH_sexe), stat = "identity") +
   geom_point(aes(x = as.numeric(aged), y = SH_sexe), stat = "identity", color = "red") +
@@ -85,13 +90,15 @@ ggplot(
 
 
 # stats surf par statut
-df3 <- tibble(df2 %>% group_by(couple, surf) %>% summarise(x = n()) %>% group_by(couple) %>% mutate(y = 100 * x / sum(x)))
+df3 <- tibble(df2 %>% group_by(couple, surf) %>% summarise(x = n()) %>% group_by(couple) %>%
+                mutate(y = 100 * x / sum(x)))
 p <- ggplot(df3) +
   geom_bar(aes(x = surf, y = y, color = couple), stat = "identity", position = "dodge")
 
 p
 # stats trans par statut
-df3 <- tibble(df2 %>% group_by(couple, trans) %>% summarise(x = n()) %>% group_by(couple) %>% mutate(y = 100 * x / sum(x)))
+df3 <- tibble(df2 %>% group_by(couple, trans) %>% summarise(x = n()) %>% group_by(couple) %>% 
+                mutate(y = 100 * x / sum(x)))
 p <- ggplot(df3) +
   geom_bar(aes(x = trans, y = y, color = couple), stat = "identity", position = "dodge")
 
@@ -129,13 +136,13 @@ df2$sexe <-
 fonction_de_stat_agregee <- function(a, b = "moyenne", ...) {
   checkvalue <- F
   for (x in c("moyenne", "variance", "ecart-type", "sd")) {
-    checkvalue <- (checkvalue | b == x)
+    checkvalue <- (checkvalue || b == x)
   }
   if (checkvalue == FALSE) stop("statistique non supportée")
 
   if (b == "moyenne") {
     x <- mean(a, na.rm = T, ...)
-  } else if (b == "ecart-type" | b == "sd") {
+  } else if (b == "ecart-type" || b == "sd") {
     x <- sd(a, na.rm = T, ...)
   } else if (b == "variance") {
     x <- var(a, na.rm = T, ...)
